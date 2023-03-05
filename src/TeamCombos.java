@@ -36,14 +36,14 @@ class Combination {
         // Current combination is ready to be printed, print it
         if (index == r)
         {
-            System.out.println("The first team: "+ first);
-            for (int j=0; j<r; j++)
-                System.out.print(data2.get(j)+" ");
-            counter++;
-            if (counter==20)
-                System.out.println("20 combo");
             System.out.println("Combination "+counter);
-            System.out.println("");
+            System.out.println("The first team: "+ first);
+            String second="";
+            for (int j=0; j<r; j++){second=second+" "+ data2.get(j);}
+                //System.out.print(data2.get(j)+" ");
+            System.out.println("The second team: "+ second);
+            System.out.println("************************************");
+            counter++;
             return;
         }
 
@@ -72,7 +72,7 @@ class Combination {
                 {
                     for (int j=0; j<r; j++){
                         System.out.println(data.get(j));
-                        first=first+data.get(j);
+                        first=first+" "+data.get(j);
                     }
 
                     //System.out.println("Combination "+counter);
@@ -83,7 +83,7 @@ class Combination {
                     List<Integer> tempData= new ArrayList<>();
                     System.out.println("this is data:"+data);
                     tempList.removeAll(data);
-                    data.remove(data.size()-1);
+                    if(data.size()>5){data.remove(data.size()-1);}
                     System.out.println(tempList);
                     secondGroupFinder(tempList,tempData,0,tempList.size()-1,0,5,first);
                     System.out.println("");
@@ -98,6 +98,7 @@ class Combination {
                 for (int i=start; i<=end && end-i+1 >= r-index; i++)
                 {
                     data.add(index,arr.get(i));
+                    if(data.size()>5){data.remove(data.size()-1);}
                     combinationUtil(arr, data, i+1, end, index+1, r);
                 }
             }
