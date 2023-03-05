@@ -28,16 +28,20 @@ import java.util.List;
 
 
 class Combination {
+    HashMap<List, List> AllCombs = new HashMap<List, List>();
     static int counter=1;
     static void secondGroupFinder(List arr2, List data2, int start,
-                                int end, int index, int r)
+                                int end, int index, int r, String first)
     {
         // Current combination is ready to be printed, print it
         if (index == r)
         {
+            System.out.println("The first team: "+ first);
             for (int j=0; j<r; j++)
                 System.out.print(data2.get(j)+" ");
             counter++;
+            if (counter==20)
+                System.out.println("20 combo");
             System.out.println("Combination "+counter);
             System.out.println("");
             return;
@@ -50,7 +54,7 @@ class Combination {
         for (int i=start; i<=end && end-i+1 >= r-index; i++)
         {
             data2.add(index,arr2.get(i));
-            secondGroupFinder(arr2, data2, i+1, end, index+1, r);
+            secondGroupFinder(arr2, data2, i+1, end, index+1, r,first);
         }
     }
 
@@ -62,19 +66,26 @@ class Combination {
             static void combinationUtil(List arr, List data, int start,
                                         int end, int index, int r)
             {
+                String first="";
                 // Current combination is ready to be printed, print it
                 if (index == r)
                 {
-                    for (int j=0; j<r; j++)
+                    for (int j=0; j<r; j++){
                         System.out.println(data.get(j));
+                        first=first+data.get(j);
+                    }
+
+                    //System.out.println("Combination "+counter);
+                    //counter++;
 
                     //filtering
                     List<Integer> tempList= new ArrayList<>(arr);
                     List<Integer> tempData= new ArrayList<>();
                     System.out.println("this is data:"+data);
                     tempList.removeAll(data);
+                    data.remove(data.size()-1);
                     System.out.println(tempList);
-                    secondGroupFinder(tempList,tempData,0,tempList.size()-1,0,5);
+                    secondGroupFinder(tempList,tempData,0,tempList.size()-1,0,5,first);
                     System.out.println("");
 
                     return;
@@ -86,7 +97,7 @@ class Combination {
                 // at remaining positions
                 for (int i=start; i<=end && end-i+1 >= r-index; i++)
                 {
-                    data.(index,arr.get(i));
+                    data.add(index,arr.get(i));
                     combinationUtil(arr, data, i+1, end, index+1, r);
                 }
             }
@@ -97,13 +108,11 @@ class Combination {
             {
                 // A temporary array to store all combination one by one
                 List<Integer> data = new ArrayList<>();
-                HashMap<List, List> AllCombs = new HashMap<List, List>();
 
                 // Print all combination using temporary array 'data[]'
                 combinationUtil(arr, data, 0, n-1, 0, r);
             }
 
-            /*Driver function to check for above function*/
             public static void main (String[] args) {
                List<Integer> arr = new ArrayList<Integer>();
                 for(int i=1;i<13;i++){
@@ -115,8 +124,6 @@ class Combination {
                 printCombination(arr, n, r);
             }
         }
-
-        /* This code is contributed by Devesh Agrawal */
 
 
 
