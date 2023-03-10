@@ -29,17 +29,29 @@ import java.util.List;
 
 
 class Combination {
-    HashMap<String, Integer> AllCombs = new HashMap<String, Integer>();
+    HashMap<String, Integer> AllCombs = new HashMap<String, Integer>(); // Hashmap to store every possible combination of teams
+    HashMap<String, Player> NameToPlayer = new HashMap<String, Player>(); // Hashmap to store { player name : player object }
+    List<Player> PlayersLst; // All the players playing today stored as list
     static int counter = 1;
 
-    public void secondGroupFinder(List <Player> arr2, List <Player> data2, int start,
+    public Combination(List<Player> p) {
+        this.PlayersLst = p;
+        for (int i = 0; i < p.size(); i++) {
+            this.NameToPlayer.put(p.get(i).getName(), p.get(i));
+        }
+    }
+
+    public void secondGroupFinder(List<Player> arr2, List<Player> data2, int start,
+
                                   int end, int index, int r, String first) {
         if (index == r) {
             String second = "";
             for (int j = 0; j < r; j++) {
                 second = second + " " + data2.get(j).getName();
             }
-            this.AllCombs.put(first+","+second, 0);
+
+            this.AllCombs.put(first + "," + second, 0);
+
             counter++;
             return;
         }
@@ -49,12 +61,13 @@ class Combination {
         }
     }
 
-    public void printCombination(List <Player> arr, int n, int r) {
+    public void printCombination(int n, int r) {
         List<Player> data = new ArrayList<>();
-        combinationUtil(arr, data, 0, n - 1, 0, r);
+        combinationUtil(this.PlayersLst, data, 0, n - 1, 0, r);
         this.delete_dups();
     }
-    public void combinationUtil(List <Player>  arr, List <Player> data, int start,
+
+    public void combinationUtil(List<Player> arr, List<Player> data, int start,
                                 int end, int index, int r) {
         String first = "";
         if (index == r) {
@@ -81,18 +94,29 @@ class Combination {
     }
 
 
-    public void delete_dups(){
-        counter=1;
-        HashMap<String,Integer> dup= (HashMap<String,Integer>)this.AllCombs.clone();
-        for(String key: this.AllCombs.keySet()){
-            String[] splited= key.split(",");
-            String reverse= splited[1]+","+splited[0];
-            if(dup.containsKey(key)){
+    public void delete_dups() {
+        counter = 1;
+        HashMap<String, Integer> dup = (HashMap<String, Integer>) this.AllCombs.clone();
+        for (String key : this.AllCombs.keySet()) {
+            String[] splited = key.split(",");
+            String reverse = splited[1] + "," + splited[0];
+            if (dup.containsKey(key)) {
                 dup.remove(reverse);
             }
         }
-        this.AllCombs=dup;
-        System.out.println(this.AllCombs);
+        this.AllCombs = dup;
+        //System.out.println(this.AllCombs);
+    }
+
+    public void rank_combos(){
+        for (String key : this.AllCombs.keySet()){
+            String[] teams = key.split(",");
+            String[] team1= teams[0].split(" ");
+            String[] team2= teams[1].split(" ");
+            System.out.println(team2[1]+" "+team2[2]);
+            //System.out.println(splited[1]);
+            //System.out.println("********************");
+        }
     }
 
 
@@ -109,16 +133,13 @@ class Combination {
         Player David = new Player("David Volk", 68, 74, 77, 72, 64, 79, 69, 67);
         Player Dolev = new Player("Dolev levy", 63, 70, 77, 72, 62, 73, 85, 66);
         Player Yoni = new Player("Yoni Tal", 82, 77, 80, 79, 94, 79, 88, 95);
-        Player[] p = { Lidor, Yair, Zinger, Yaniv, Kenner, Noam, uri, ido, Itzik, David, Dolev, Yoni };
-        ArrayList<Player> players= new ArrayList<Player>(Arrays.asList(p));
-        Combination c= new Combination();
-        int r = 5;
+        Player[] p = {Lidor, Yair, Zinger, Yaniv, Kenner, Noam, uri, ido, Itzik, David, Dolev, Yoni};
+        ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(p));
+        Combination c = new Combination(players);
         int n = players.size();
-        c.printCombination(players, n, r);
+        c.printCombination(n, 5);
+        c.rank_combos();
     }
 }
-
-
-
 
 // 1 4 5 9 10, 2 3 6 7 8
