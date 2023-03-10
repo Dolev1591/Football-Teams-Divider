@@ -42,13 +42,16 @@ class Combination {
     }
 
     public void secondGroupFinder(List<Player> arr2, List<Player> data2, int start,
+
                                   int end, int index, int r, String first) {
         if (index == r) {
             String second = "";
             for (int j = 0; j < r; j++) {
                 second = second + " " + data2.get(j).getName();
             }
+
             this.AllCombs.put(first + "," + second, 0);
+
             counter++;
             return;
         }
@@ -139,3 +142,4 @@ class Combination {
     }
 }
 
+// 1 4 5 9 10, 2 3 6 7 8
