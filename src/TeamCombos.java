@@ -23,8 +23,6 @@ class MAIN {
     */
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 class Combination {
@@ -148,14 +146,16 @@ class Combination {
         for (String key : this.AllCombs.keySet()) {
             this.ranks.put(key,this.AllCombs.get(key).distance());
         }
-        // Create a stream of the entries of the map
-        Stream<HashMap.Entry<String, Double>> entryStream = this.ranks.entrySet().stream();
+        double minVal= Double.MAX_VALUE;
+        String bestMatch="";
+        for (String key : this.ranks.keySet()) {
+            if(this.ranks.get(key)<minVal){
+                minVal=this.ranks.get(key);
+                bestMatch=key;
+            }
+        }
+        System.out.println(bestMatch+" is the best match with distance of "+minVal);
 
-        // Sort the entries by value using a custom comparator
-        List<HashMap.Entry<String, Double>> sortedList = this.ranks.entrySet().stream()
-                .sorted(HashMap.Entry.comparingByValue())
-                .collect(Collectors.toList());
-        System.out.println(this.ranks);
     }
 
 
