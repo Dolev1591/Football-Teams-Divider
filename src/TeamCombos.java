@@ -22,16 +22,17 @@ class MAIN {
     }
     */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 class Combination {
-    HashMap<String, Integer> AllCombs = new HashMap<String, Integer>(); // Hashmap to store every possible combination of teams
+    HashMap<String, Point> AllCombs = new HashMap<String, Point>(); // Hashmap to store every possible combination of teams
     HashMap<String, Player> NameToPlayer = new HashMap<String, Player>(); // Hashmap to store { player name : player object }
+    HashMap<String,Double> ranks= new HashMap<String,Double>();
     List<Player> PlayersLst; // All the players playing today stored as list
+    List<Double> StatsAvg = new ArrayList<>();
     static int counter = 1;
 
     public Combination(List<Player> p) {
@@ -39,6 +40,15 @@ class Combination {
         for (int i = 0; i < p.size(); i++) {
             this.NameToPlayer.put(p.get(i).getName(), p.get(i));
         }
+        double sum = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < p.size(); j++) {
+                sum = sum + p.get(j).getStats()[i];
+            }
+            this.StatsAvg.add(sum / p.size());
+            sum = 0;
+        }
+        System.out.println(this.StatsAvg);
     }
 
     public void secondGroupFinder(List<Player> arr2, List<Player> data2, int start,
@@ -48,7 +58,7 @@ class Combination {
             for (int j = 0; j < r; j++) {
                 second = second + " " + data2.get(j).getName();
             }
-            this.AllCombs.put(first + "," + second, 0);
+            this.AllCombs.put(first + "," + second, new Point(0, 0));
             counter++;
             return;
         }
@@ -93,7 +103,7 @@ class Combination {
 
     public void delete_dups() {
         counter = 1;
-        HashMap<String, Integer> dup = (HashMap<String, Integer>) this.AllCombs.clone();
+        HashMap<String, Point> dup = (HashMap<String, Point>) this.AllCombs.clone();
         for (String key : this.AllCombs.keySet()) {
             String[] splited = key.split(",");
             String reverse = splited[1] + "," + splited[0];
@@ -105,15 +115,47 @@ class Combination {
         //System.out.println(this.AllCombs);
     }
 
-    public void rank_combos(){
-        for (String key : this.AllCombs.keySet()){
+    public void rank_combos() {
+        for (String key : this.AllCombs.keySet()) {
             String[] teams = key.split(",");
-            String[] team1= teams[0].split(" ");
-            String[] team2= teams[1].split(" ");
-            System.out.println(team2[1]+" "+team2[2]);
-            //System.out.println(splited[1]);
-            //System.out.println("********************");
+            String[] team1 = teams[0].split(" ");
+            String[] team2 = teams[1].split(" ");
+            this.AllCombs.put(key,new Point(rank_team(team1),rank_team(team2)));
         }
+        sort_combs();
+    }
+
+    public double rank_team(String[] team) {
+        double sum = 0;
+        List<Double> teamAVG= new ArrayList<>();
+        for (int k = 0; k < 8; k++) {
+            for (int i = 1; i < team.length; i += 2) {
+                String name = team[i] + " " + team[i + 1];
+                Player p = this.NameToPlayer.get(name);
+                //System.out.println(p.getName());
+                sum=sum+p.getStats()[k];
+            }
+            teamAVG.add(sum/5);
+            sum=0;
+        }
+        for (int i=0;i<teamAVG.size();i++){
+            sum=sum+(Math.abs(teamAVG.get(i)-this.StatsAvg.get(i)));
+        }
+        return sum;
+    }
+
+    public void sort_combs(){
+        for (String key : this.AllCombs.keySet()) {
+            this.ranks.put(key,this.AllCombs.get(key).distance());
+        }
+        // Create a stream of the entries of the map
+        Stream<HashMap.Entry<String, Double>> entryStream = this.ranks.entrySet().stream();
+
+        // Sort the entries by value using a custom comparator
+        List<HashMap.Entry<String, Double>> sortedList = this.ranks.entrySet().stream()
+                .sorted(HashMap.Entry.comparingByValue())
+                .collect(Collectors.toList());
+        System.out.println(this.ranks);
     }
 
 
